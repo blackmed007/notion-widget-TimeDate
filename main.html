@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poland Date Time Widget</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: transparent;
+        }
+
+        .widget {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 24px;
+            padding: 32px 40px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            backdrop-filter: blur(10px);
+            min-width: 320px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .widget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        }
+
+        .time {
+            font-size: 64px;
+            font-weight: 600;
+            color: white;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .date {
+            font-size: 20px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .separator {
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="widget">
+        <div class="time" id="time">00:00</div>
+        <div class="date" id="date">
+            <span id="day">00</span>
+            <span class="separator"></span>
+            <span id="month">00</span>
+            <span class="separator"></span>
+            <span id="year">0000</span>
+        </div>
+    </div>
+
+    <script>
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Format time for Poland (24h format)
+            const time = now.toLocaleTimeString('pl-PL', {
+                timeZone: 'Europe/Warsaw',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+            
+            // Format date for Poland
+            const day = now.toLocaleDateString('pl-PL', {
+                timeZone: 'Europe/Warsaw',
+                day: '2-digit'
+            });
+            
+            const month = now.toLocaleDateString('pl-PL', {
+                timeZone: 'Europe/Warsaw',
+                month: '2-digit'
+            });
+            
+            const year = now.toLocaleDateString('pl-PL', {
+                timeZone: 'Europe/Warsaw',
+                year: 'numeric'
+            });
+            
+            // Update DOM
+            const timeEl = document.getElementById('time');
+            const dayEl = document.getElementById('day');
+            const monthEl = document.getElementById('month');
+            const yearEl = document.getElementById('year');
+            
+            if (timeEl.textContent !== time) {
+                timeEl.textContent = time;
+                timeEl.classList.remove('fade-in');
+                void timeEl.offsetWidth;
+                timeEl.classList.add('fade-in');
+            }
+            
+            dayEl.textContent = day;
+            monthEl.textContent = month;
+            yearEl.textContent = year;
+        }
+
+        // Update immediately
+        updateDateTime();
+        
+        // Update every second
+        setInterval(updateDateTime, 1000);
+    </script>
+</body>
+</html>
